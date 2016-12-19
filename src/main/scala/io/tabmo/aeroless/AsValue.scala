@@ -29,6 +29,7 @@ object AsValue {
     case AsArray(seq) => seq.map(unpackAST).toList.asJava
     case AsLong(l) => new java.lang.Long(l)
     case AsString(s) => s
+    case AsNull => null
   }
 
   def apply(record: AerospikeRecord): AsValue = {
