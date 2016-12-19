@@ -1,7 +1,6 @@
 package io.tabmo.aeroless
 
 import org.scalatest.{FlatSpec, Matchers}
-import com.aerospike.client.Value._
 
 class AsEncoderSpec extends FlatSpec with Matchers {
 
@@ -35,16 +34,6 @@ class AsEncoderSpec extends FlatSpec with Matchers {
       "contact" -> AsValue.obj("address" -> AsString("Rue de Thor")),
       "friends" -> AsArray(Array(AsString("toto"), AsString("fifou")))
     )
-
-    val binSeq = encodedObject.asObject.toSeqBins //asObject is an unsafe operation
-    binSeq.map(_.name) shouldBe List("name", "age", "contact", "friends")
-
-    binSeq.find(_.name == "name").get.value shouldBe a[StringValue]
-    binSeq.find(_.name == "age").get.value shouldBe a[LongValue]
-    binSeq.find(_.name == "contact").get.value shouldBe a[BlobValue]
-    //binSeq.find(_.name == "contact").get.value shouldBe a[MapValue]
-    binSeq.find(_.name == "friends").get.value shouldBe a[BlobValue]
-    //binSeq.find(_.name == "friends").get.value shouldBe a[ListValue]
   }
 
   "AsEncoder" should "be contramap" in {
