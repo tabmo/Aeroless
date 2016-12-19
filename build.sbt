@@ -5,8 +5,8 @@ organization := "io.tabmo"
 scalaVersion := "2.11.8"
 
 scalacOptions ++= Seq(
-  "-Ypartial-unification", // enable fix for SI-2712
-  "-Yliteral-types",       // enable SIP-23 implementation
+  //"-Ypartial-unification", // enable fix for SI-2712
+  //"-Yliteral-types",       // enable SIP-23 implementation
   "-deprecation",           // Warn when deprecated API are used
   "-feature",               // Warn for usages of features that should be importer explicitly
   "-unchecked",             // Warn when generated code depends on assumptions
@@ -38,7 +38,7 @@ licenses += ("Apache-2.0", url("http://opensource.org/licenses/Apache-2.0"))
 
 bintrayOrganization := Some("tabmo")
 
-scalaOrganization := "org.typelevel"
+//scalaOrganization := "org.typelevel"
 
 // Exclude logback file
 mappings in (Compile, packageBin) ~= { _.filter(!_._1.getName.endsWith(".xml")) }
