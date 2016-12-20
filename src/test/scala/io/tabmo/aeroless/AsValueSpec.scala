@@ -74,4 +74,12 @@ class AsValueSpec extends FlatSpec with Matchers {
     binSeq.find(_.name == "friends").get.value shouldBe a[BlobValue]
     //binSeq.find(_.name == "friends").get.value shouldBe a[ListValue]
   }
+
+  "AsObject" should "read and decode node" in {
+    val value = AsValue.obj(
+      "age" -> AsLong(27)
+    ).asObject
+
+    value[Long]("age") shouldBe Done(27)
+  }
 }

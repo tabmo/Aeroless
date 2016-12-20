@@ -46,6 +46,10 @@ case class AsObject(kv: Map[String, AsValue] = Map()) extends AsValue {
   def ++(obj: AsObject): AsObject = AsObject(kv ++ obj.kv)
 
   def toSeqBins: Seq[Bin] = kv.toList.map { case (k, v) => new Bin(k, AsValue.unpackAST(v)) }
+
+  def apply[A](keyName: String)(implicit asDecoder: AsDecoder[A]): Result[A] = {
+    asDecoder.decode(kv.getOrElse(keyName, AsNull))
+  }
 }
 
 object AsObject {

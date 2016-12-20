@@ -80,11 +80,9 @@ object AsDecoder {
     case _ => Failed
   }
 
-  implicit def optionDecoder[A](implicit ev: AsDecoder[A]): AsDecoder[Option[A]] = instance { e =>
-    ev.decode(e) match {
-      case Done(x) => Done(Some(x))
-      case Failed => Done(None)
-    }
+  implicit def optionDecoder[A](implicit ev: AsDecoder[A]): AsDecoder[Option[A]] = instance {
+    case AsNull => Done(None)
+    case e: AsValue => ev.decode(e).map(Some(_))
   }
 
   implicit val hnilDecoder: AsDecoder[HNil] = instance(_ => Done(HNil))
