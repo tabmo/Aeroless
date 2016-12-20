@@ -23,6 +23,8 @@ object AsEncoder {
 
   implicit val stringEncoder: AsEncoder[String] = instance(AsString)
 
+  implicit def mapEncoder[V](implicit evV: AsEncoder[V]): AsEncoder[Map[String, V]] = instance(kv => AsObject(kv.mapValues(evV.encode)))
+
   implicit def listEncoder[A](implicit ev: AsEncoder[A]): AsEncoder[List[A]] = instance { list =>
     AsArray(list.map(ev.encode).toIndexedSeq)
   }

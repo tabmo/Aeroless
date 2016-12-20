@@ -17,6 +17,15 @@ class AsDecoderSpec extends FlatSpec with Matchers {
     AsDecoder[Option[String]].decode(AsNull) shouldBe Done(None)
   }
 
+  "AsDecoder" should "decode map value" in {
+    val listValues = AsValue.obj(
+      "value1" -> AsLong(1L),
+      "value2" -> AsLong(2L)
+    )
+
+    AsDecoder[Map[String, Long]].decode(listValues) shouldBe Done(Map("value1" -> 1L, "value2" -> 2L))
+  }
+
   "AsDecoder" should "decode list value" in {
     AsDecoder[List[String]].decode(AsValue.arr(AsString("foo"), AsString("bar"))) shouldBe Done(List("foo", "bar"))
   }

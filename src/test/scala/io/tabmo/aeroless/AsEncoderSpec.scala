@@ -17,6 +17,18 @@ class AsEncoderSpec extends FlatSpec with Matchers {
     AsEncoder[Option[String]].encode(None) shouldBe AsNull
   }
 
+  "AsDecoder" should "decode map value" in {
+    val map = Map(
+      "value1" -> 1L,
+      "value2" -> 2L
+    )
+
+    AsEncoder[Map[String, Long]].encode(map) shouldBe AsValue.obj(
+      "value1" -> AsLong(1L),
+      "value2" -> AsLong(2L)
+    )
+  }
+
   "AsEncoder" should "encode list value" in {
     AsEncoder[List[String]].encode(List("foo")) shouldBe AsValue.arr(AsValue.string("foo"))
   }

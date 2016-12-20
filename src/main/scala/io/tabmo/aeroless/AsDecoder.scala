@@ -1,5 +1,7 @@
 package io.tabmo.aeroless
 
+import scala.util.Try
+
 trait AsDecoder[A] {
   self =>
   def decode[V <: AsValue](v: V): Result[A]
@@ -11,22 +13,33 @@ trait AsDecoder[A] {
 
 object Result {
   def apply[A](a: A): Result[A] = Done(a)
+
+  def fromOption[A](opt: Option[A]) = opt match {
+    case Some(a) => Done(a)
+    case None => Failed
+  }
 }
 
 sealed abstract class Result[+A] {
   def map[B](f: A => B): Result[B]
 
   def flatMap[B](f: A => Result[B]): Result[B]
+
+  def toOption: Option[A]
 }
 case class Done[A](a: A) extends Result[A] {
   override def map[B](f: (A) => B): Result[B] = Done(f(a))
 
   override def flatMap[B](f: (A) => Result[B]): Result[B] = f(a)
+
+  override def toOption: Option[A] = Some(a)
 }
 case object Failed extends Result[Nothing] {
   override def map[B](f: (Nothing) => B): Result[B] = Failed
 
   override def flatMap[B](f: (Nothing) => Result[B]): Result[B] = Failed
+
+  override def toOption: Option[Nothing] = None
 }
 
 object AsDecoder {
@@ -44,6 +57,16 @@ object AsDecoder {
 
   implicit val stringDecoder: AsDecoder[String] = instance {
     case AsString(v) => Done(v)
+    case _ => Failed
+  }
+
+  implicit def mapDecoder[K, V](implicit evK: AsDecoder[K], evV: AsDecoder[V]): AsDecoder[Map[K, V]] = instance {
+    case AsObject(kv) => kv.toList.foldRight(Result(List[(K, V)]())) { case ((k, v), acc) =>
+      acc match {
+        case Done(s) => evK.decode(AsString(k)).flatMap(k => evV.decode(v).map((k, _) :: s))
+        case Failed => Failed
+      }
+    }.map(_.toMap)
     case _ => Failed
   }
 
