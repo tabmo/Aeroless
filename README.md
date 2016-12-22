@@ -54,7 +54,7 @@ Aeroless provide Encoder and Decoder to transform Scala object from/to raw Aeros
 
 You can encode complex data type to AsValue :
 
-```
+```scala
 case class Contact(address: String)
 case class Person(name: String, age: Long, contact: Contact, friends: Option[List[String]])
 
