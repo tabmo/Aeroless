@@ -107,6 +107,20 @@ val value = AsValue.obj(
 value[Long]("age") shouldBe Done(27)
 ```
 
+and use for expression :
+```scala
+
+case class Param2(p: String)
+
+val obj: AsObject = ...
+
+for {
+    param1 <- obj[Long]("param1")
+    param2 <- obj[Param2]("param2")     
+} yield (param1, param2)
+
+```
+
 #### Map / Option / List
 
 A support for this type is available. For example, just look on the tests!
