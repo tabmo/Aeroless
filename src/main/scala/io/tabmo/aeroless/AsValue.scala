@@ -1,8 +1,5 @@
 package io.tabmo.aeroless
 
-import scala.collection.JavaConversions._
-import scala.collection.JavaConverters._
-
 import com.aerospike.client.Bin
 import io.tabmo.aerospike.data.AerospikeRecord
 
@@ -16,23 +13,33 @@ object AsValue {
     if (value == null) AsNull
     else {
       value match {
-        case _: java.util.Map[_, _] => AsObject(value.asInstanceOf[java.util.Map[String, AnyRef]].asScala.mapValues(buildAST).toMap)
-        case _: java.util.List[_] => AsArray(value.asInstanceOf[java.util.List[AnyRef]].map(buildAST).toIndexedSeq)
+        case _: java.util.Map[_, _] => {
+          import scala.collection.JavaConverters._
+          AsObject(value.asInstanceOf[java.util.Map[String, AnyRef]].asScala.mapValues(buildAST).toMap)
+        }
+        case _: java.util.List[_] => {
+          import scala.collection.JavaConversions._
+          AsArray(value.asInstanceOf[java.util.List[AnyRef]].map(buildAST).toIndexedSeq)
+        }
         case l: java.lang.Long => AsLong(l)
         case s: String => AsString(s)
       }
     }
   }
 
-  def unpackAST(value: AsValue): Object = value match {
-    case AsObject(map) => map.mapValues(unpackAST).asJava
-    case AsArray(seq) => seq.map(unpackAST).toList.asJava
-    case AsLong(l) => new java.lang.Long(l)
-    case AsString(s) => s
-    case AsNull => null
+  def unpackAST(value: AsValue): Object = {
+    import scala.collection.JavaConverters._
+    value match {
+      case AsObject(map) => map.mapValues(unpackAST).asJava
+      case AsArray(seq) => seq.map(unpackAST).toList.asJava
+      case AsLong(l) => new java.lang.Long(l)
+      case AsString(s) => s
+      case AsNull => null
+    }
   }
 
   def apply(record: AerospikeRecord): AsValue = {
+    import scala.collection.JavaConversions._
     buildAST(mapAsJavaMap(record.bins))
   }
 

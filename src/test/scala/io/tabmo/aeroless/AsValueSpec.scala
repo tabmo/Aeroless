@@ -3,7 +3,7 @@ package io.tabmo.aeroless
 import org.scalatest.{FlatSpec, Matchers}
 import scala.collection.JavaConversions._
 
-import com.aerospike.client.Value.{BlobValue, LongValue, StringValue}
+import com.aerospike.client.Value._
 import io.tabmo.aerospike.data.AerospikeRecord
 
 class AsValueSpec extends FlatSpec with Matchers {
@@ -62,8 +62,7 @@ class AsValueSpec extends FlatSpec with Matchers {
       "contact" -> AsValue.obj("address" -> AsString("Rue de Thor"))
     )
     val binSeq = value.asObject.toSeqBins //asObject is an unsafe operation
-    binSeq.find(_.name == "contact").get.value shouldBe a[BlobValue]
-    //binSeq.find(_.name == "contact").get.value shouldBe a[MapValue]
+    binSeq.find(_.name == "contact").get.value shouldBe a[MapValue]
   }
 
   "AsValue" should "well unpack list value" in {
@@ -71,8 +70,7 @@ class AsValueSpec extends FlatSpec with Matchers {
       "friends" -> AsArray(Array(AsString("toto"), AsString("fifou")))
     )
     val binSeq = value.asObject.toSeqBins //asObject is an unsafe operation
-    binSeq.find(_.name == "friends").get.value shouldBe a[BlobValue]
-    //binSeq.find(_.name == "friends").get.value shouldBe a[ListValue]
+    binSeq.find(_.name == "friends").get.value shouldBe a[ListValue]
   }
 
   "AsObject" should "read and decode node" in {

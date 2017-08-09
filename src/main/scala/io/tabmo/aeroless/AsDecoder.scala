@@ -1,7 +1,5 @@
 package io.tabmo.aeroless
 
-import scala.util.Try
-
 trait AsDecoder[A] {
   self =>
   def decode[V <: AsValue](v: V): Result[A]
