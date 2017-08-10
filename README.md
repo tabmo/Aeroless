@@ -9,7 +9,7 @@ Add in your build.sbt
 ```scala
 resolvers += "Tabmo Bintray" at "https://dl.bintray.com/tabmo/maven"
 
-libraryDependencies += "io.tabmo" %% "aeroless" % "0.1"
+libraryDependencies += "io.tabmo" %% "aeroless" % "0.2"
 ```
 
 ## Usage
